@@ -11,6 +11,7 @@ import android.text.Selection;
 import android.text.Spannable;
 import android.text.TextWatcher;
 import android.text.method.ArrowKeyMovementMethod;
+import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
@@ -459,6 +460,28 @@ public class ReactAztecText extends AztecText {
         ArrayList<ITextFormat> newStylesList = new ArrayList<>(selectedStylesSet);
         setSelectedStyles(newStylesList);
         updateToolbarButtons(newStylesList);
+    }
+
+    /**
+     * This code was taken from ReactEditText
+     */
+    void setGravityHorizontal(int gravityHorizontal) {
+        if (gravityHorizontal == 0) {
+            gravityHorizontal = getGravity() & (Gravity.HORIZONTAL_GRAVITY_MASK | Gravity.RELATIVE_HORIZONTAL_GRAVITY_MASK);
+        }
+        int newGravity = (getGravity() & ~Gravity.HORIZONTAL_GRAVITY_MASK &
+                ~Gravity.RELATIVE_HORIZONTAL_GRAVITY_MASK) | gravityHorizontal;
+        setGravity(newGravity);
+    }
+
+    /**
+     * This code was taken from ReactEditText
+     */
+    void setGravityVertical(int gravityVertical) {
+        if (gravityVertical == 0) {
+            gravityVertical = getGravity() & Gravity.VERTICAL_GRAVITY_MASK;
+        }
+        setGravity((getGravity() & ~Gravity.VERTICAL_GRAVITY_MASK) | gravityVertical);
     }
 
     /**

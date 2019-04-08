@@ -9,9 +9,11 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 
 import com.facebook.infer.annotation.Assertions;
+import com.facebook.react.bridge.JSApplicationIllegalArgumentException;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
@@ -99,7 +101,7 @@ public class ReactAztecManager extends SimpleViewManager<ReactAztecText> {
     public Map<String, Object> getExportedCustomBubblingEventTypeConstants() {
         return MapBuilder.<String, Object>builder()
              /*   .put(
-                        "topSubmitEditing",
+                        "topSubmitEditing"
                         MapBuilder.of(
                                 "phasedRegistrationNames",
                                 MapBuilder.of(
@@ -292,6 +294,50 @@ public class ReactAztecManager extends SimpleViewManager<ReactAztecText> {
         return fontWeightString.length() == 3 && fontWeightString.endsWith("00")
                 && fontWeightString.charAt(0) <= '9' && fontWeightString.charAt(0) >= '1' ?
                 100 * (fontWeightString.charAt(0) - '0') : -1;
+    }
+
+    // FIXME add tests
+    /**
+     * This code was taken from ReactEditText
+     */
+    @ReactProp(name = ViewProps.TEXT_ALIGN)
+    public void setTextAlign(ReactAztecText view, @Nullable String textAlign) {
+//        Log.e("TESTING123", "view: " + view + ", textAlign: " + textAlign);
+//        Log.e("TESTING123", "center check: " + "center".equals(textAlign));
+        if (textAlign == null || "auto".equals(textAlign)) {
+            view.setGravityHorizontal(Gravity.NO_GRAVITY);
+        } else if ("left".equals(textAlign)) {
+            view.setGravityHorizontal(Gravity.LEFT);
+        } else if ("right".equals(textAlign)) {
+            view.setGravityHorizontal(Gravity.RIGHT);
+        } else if ("center".equals(textAlign)) {
+            view.setGravityHorizontal(Gravity.CENTER_HORIZONTAL);
+        } else if ("justify".equals(textAlign)) {
+            // Fallback gracefully for cross-platform compat instead of error
+            view.setGravityHorizontal(Gravity.LEFT);
+        } else {
+            throw new JSApplicationIllegalArgumentException("Invalid textAlign: " + textAlign);
+        }
+    }
+
+    // FIXME add tests
+
+    /**
+     * This code was taken from ReactTextInputManager
+     */
+    @ReactProp(name = ViewProps.TEXT_ALIGN_VERTICAL)
+    public void setTextAlignVertical(ReactAztecText view, @Nullable String textAlignVertical) {
+        if (textAlignVertical == null || "auto".equals(textAlignVertical)) {
+            view.setGravityVertical(Gravity.NO_GRAVITY);
+        } else if ("top".equals(textAlignVertical)) {
+            view.setGravityVertical(Gravity.TOP);
+        } else if ("bottom".equals(textAlignVertical)) {
+            view.setGravityVertical(Gravity.BOTTOM);
+        } else if ("center".equals(textAlignVertical)) {
+            view.setGravityVertical(Gravity.CENTER_VERTICAL);
+        } else {
+            throw new JSApplicationIllegalArgumentException("Invalid textAlignVertical: " + textAlignVertical);
+        }
     }
 
     /* End of the code taken from ReactTextInputManager */
@@ -519,6 +565,9 @@ public class ReactAztecManager extends SimpleViewManager<ReactAztecText> {
             // Add the outer tags when the field was started empty, and only the first time the user types in it.
             if (mPreviousText.length() == 0 && !TextUtils.isEmpty(newText) && !TextUtils.isEmpty(mEditText.getTagName())) {
                 mEditText.fromHtml('<' + mEditText.getTagName() + '>' + newText + "</" + mEditText.getTagName() + '>', false);
+//                String source = "<p style=\"text-align: center;\">" + newText + "</p>";
+//                Log.e("TEST1234", "source: " + source);
+//                mEditText.fromHtml(source, false);
             }
         }
 

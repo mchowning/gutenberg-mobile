@@ -29,6 +29,7 @@ class AztecView extends React.Component {
     onHTMLContentWithCursor: PropTypes.func,
     onCaretVerticalPositionChange: PropTypes.func,
     blockType: PropTypes.object,
+    textAlign: PropTypes.string,
     ...ViewPropTypes, // include the default view properties
   }
 
